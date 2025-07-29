@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'firebase_options.dart';
 import 'screens/home_screen.dart';
+import 'screens/statistic_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     Home(),
-    Center(child: Text("Statistics", style: TextStyle(fontSize: 18))),
+    StatisticScreen(),
     Center(child: Text("Wishlists", style: TextStyle(fontSize: 18))),
     Center(child: Text("Account", style: TextStyle(fontSize: 18))),
   ];

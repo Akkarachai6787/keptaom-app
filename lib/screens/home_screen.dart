@@ -220,8 +220,9 @@ class _HomeContentState extends State<Home> {
     return Scaffold(
       backgroundColor: const Color(0xFF111827),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF030712),
-        elevation: 3,
+        backgroundColor: const Color(0xFF111827),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
         centerTitle: true,
         title: Column(
           children: [
