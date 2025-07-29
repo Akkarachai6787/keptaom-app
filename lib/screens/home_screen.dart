@@ -6,6 +6,8 @@ import 'manage_wallet_screen.dart';
 import 'package:keptaom/models/transaction.dart';
 import 'package:keptaom/services/transaction_services.dart';
 import 'package:keptaom/widgets/transaction_item.dart';
+import 'package:keptaom/models/category_transaction.dart';
+import 'package:keptaom/services/category_services.dart';
 import 'add_transaction_screen.dart';
 
 class Home extends StatefulWidget {
@@ -22,6 +24,8 @@ class _HomeContentState extends State<Home> {
   final walletService = WalletServices();
   List<TransactionModel> transactions = [];
   final transactionservices = Transactionservices();
+  List<CategoryTransaction?> transactionCategories = [];
+  final categoryService = CategoryServices();
 
   @override
   void initState() {
@@ -39,8 +43,16 @@ class _HomeContentState extends State<Home> {
 
   Future<void> loadTransactions() async {
     final data = await transactionservices.fetchTransactions();
+
+    final List<Future<CategoryTransaction?>> futures = data
+        .map((tx) => CategoryServices().fetchCategoryById(tx.typeId))
+        .toList();
+
+    final categories = await Future.wait(futures);
+
     setState(() {
       transactions = data;
+      transactionCategories = categories;
     });
   }
 
@@ -78,22 +90,22 @@ class _HomeContentState extends State<Home> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Color(0xFF1f2937),
-            content: Row(
-              children: [
-                Icon(Icons.error, color: Colors.red),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Error deleting wallet: $e',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.red,
-                    ),
+          content: Row(
+            children: [
+              Icon(Icons.error, color: Colors.red),
+              SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Error deleting wallet: $e',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.red,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -310,17 +322,20 @@ class _HomeContentState extends State<Home> {
                       Expanded(
                         child: SingleChildScrollView(
                           child: Column(
-                            children: transactions
-                                .map(
-                                  (tx) => TransactionItem(
-                                    transaction: tx,
-                                    onUpdate: () async {
-                                      await loadTransactions();
-                                      await loadWallets();
-                                    },
-                                  ),
-                                )
-                                .toList(),
+                            children: List.generate(transactions.length, (i) {
+                              final category = i < transactionCategories.length
+                                  ? transactionCategories[i]
+                                  : null;
+
+                              return TransactionItem(
+                                transaction: transactions[i],
+                                category: category,
+                                onUpdate: () async {
+                                  await loadTransactions();
+                                  await loadWallets();
+                                },
+                              );
+                            }),
                           ),
                         ),
                       ),

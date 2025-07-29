@@ -254,11 +254,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text(
-                        '฿',
-                        style: TextStyle(color: Colors.grey, fontSize: 40),
-                      ),
-                      const SizedBox(width: 12),
                       Expanded(
                         child: TextFormField(
                           controller: _amountController,
@@ -320,6 +315,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             return null;
                           },
                         ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        '฿',
+                        style: TextStyle(color: Colors.grey, fontSize: 40),
                       ),
                     ],
                   ),

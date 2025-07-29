@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:keptaom/models/transaction.dart';
 import 'package:keptaom/services/transaction_services.dart';
 import 'package:keptaom/services/wallet_services.dart';
+import 'package:keptaom/utils/format_date.dart';
 
 class TransactionInfoScreen extends StatefulWidget {
   final TransactionModel transaction;
+  final Color catColor;
 
-  const TransactionInfoScreen({super.key, required this.transaction});
+  const TransactionInfoScreen({
+    super.key,
+    required this.transaction,
+    required this.catColor,
+  });
 
   @override
   State<TransactionInfoScreen> createState() => _TransactionInfoScreenState();
@@ -15,6 +21,7 @@ class TransactionInfoScreen extends StatefulWidget {
 
 class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
   String? typeName;
+  Color? catColor;
   String? walletName;
   String? walletId;
   bool isLoading = true;
@@ -82,111 +89,164 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 50),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: widget.catColor,
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(color: Color(0xFF4b5563), width: 0.3),
+                    ),
+                    child: Icon(
+                      transaction.isIncome
+                          ? Icons.arrow_upward_rounded
+                          : Icons.arrow_downward_rounded,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                  ),
+                  SizedBox(height: 40),
                   Center(
                     child: Column(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Color(0xFF4b5563),
-                              width: 0.3,
-                            ),
-                          ),
-                          child: Text(
-                            _formatDate(transaction.date),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 30),
                         Text(
                           transaction.title,
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.w400,
                             color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 4),
                         Text(
-                          '฿ ${transaction.amount.abs().toStringAsFixed(2)}',
+                          '${transaction.isIncome ? '' : '-'}${NumberFormat("#,##0.00", "en_US").format(transaction.amount.abs())} ฿',
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.w500,
-                            color: transaction.isIncome
-                                ? Colors.teal[500]
-                                : Colors.red[500],
+                            color: Colors.white,
                           ),
                         ),
+                        const SizedBox(height: 30),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 30),
 
-                  // TYPE
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 24,
+                    ),
                     margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
                       color: const Color(0xFF1f2937),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Color(0xFF4b5563), width: 0.3),
                     ),
-                    child: Row(
+                    child: Column(
+                      mainAxisSize:
+                          MainAxisSize.min,
                       children: [
-                        const Icon(
-                          Icons.category,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            typeName ?? 'N/A',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: const [
+                                Icon(
+                                  Icons.category,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Type of payment',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // WALLET
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1f2937),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Color(0xFF4b5563), width: 0.3),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.account_balance_wallet,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            walletName ?? 'N/A',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
+                            Text(
+                              typeName ?? 'N/A',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        const Divider(
+                          color: Colors.white24,
+                          thickness: 0.5,
+                          height: 16,
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: const [
+                                Icon(
+                                  Icons.account_balance_wallet,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Payment wallet',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              walletName ?? 'N/A',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        const Divider(
+                          color: Colors.white24,
+                          thickness: 0.5,
+                          height: 16,
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: const [
+                                Icon(
+                                  Icons.date_range_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Date time',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              formatDate(transaction.date),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -195,11 +255,6 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
               ),
             ),
     );
-  }
-
-  String _formatDate(Timestamp timestamp) {
-    final date = timestamp.toDate();
-    return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
   }
 
   Future<bool> _showDeleteConfirmationDialog(
@@ -279,7 +334,7 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
   }
 
   void _showBottomSheet(
-    BuildContext parentContext, // context of the screen that opens the sheet
+    BuildContext parentContext,
     String label,
     String transactionId,
     double amount,
@@ -352,34 +407,37 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
                       );
 
                       ScaffoldMessenger.of(parentContext).showSnackBar(
-                      SnackBar(
-                        backgroundColor: const Color(0xFF1f2937),
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                            color: Color(0xFF4b5563),
-                            width: 0.5,
+                        SnackBar(
+                          backgroundColor: const Color(0xFF1f2937),
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                              color: Color(0xFF4b5563),
+                              width: 0.5,
+                            ),
                           ),
-                        ),
-                        content: Row(
-                          children: const [
-                            Icon(Icons.check_circle_outline, color: Colors.teal),
-                            SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                'Transaction deleted successfully',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
+                          content: Row(
+                            children: const [
+                              Icon(
+                                Icons.check_circle_outline,
+                                color: Colors.teal,
+                              ),
+                              SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'Transaction deleted successfully',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
+                      );
 
-                      Navigator.pop(parentContext, true); // Pop full page
+                      Navigator.pop(parentContext, true);
                     }
                   },
                 ),
