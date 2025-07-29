@@ -6,8 +6,10 @@ class TransactionModel {
   final double amount;
   final Timestamp date;
   final bool isIncome;
-  final DocumentReference? type; // <-- ทำให้เป็น nullable
-  final DocumentReference? wallet; // <-- ทำให้เป็น nullable
+  final DocumentReference? type;
+  final String typeId;
+  final DocumentReference? wallet;
+  final String walletId;
 
   TransactionModel({
     required this.id,
@@ -16,7 +18,9 @@ class TransactionModel {
     required this.date,
     required this.isIncome,
     this.type,
+    required this.typeId,
     this.wallet,
+    required this.walletId,
   });
 
   factory TransactionModel.fromFirestore(DocumentSnapshot doc) {
@@ -33,9 +37,11 @@ class TransactionModel {
       type: data['type'] is DocumentReference
           ? data['type'] as DocumentReference
           : null,
+      typeId: data['typeId'] ?? '',
       wallet: data['wallet'] is DocumentReference
           ? data['wallet'] as DocumentReference
           : null,
+      walletId: data['walletId'] ?? '',
     );
   }
 
@@ -46,7 +52,9 @@ class TransactionModel {
       'date': date,
       'isIncome': isIncome,
       'type': type,
+      'typeId': typeId,
       'wallet': wallet,
+      'walletId': walletId,
     };
   }
 }
