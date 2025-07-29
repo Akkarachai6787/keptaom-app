@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'dart:io';
 import 'firebase_options.dart';
 import 'screens/home_screen.dart';
 
@@ -59,17 +58,17 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF030712), // Custom background color
+          color: const Color(0xFF030712),
           border: Border(
             top: BorderSide(
               color: const Color(0xFF4b5563),
               width: 0.5,
-            ), // Top border
+            ),
           ),
         ),
         child: BottomNavigationBar(
           backgroundColor:
-              Colors.transparent, // So container color shows through
+              Colors.transparent,
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
           onTap: (index) {
