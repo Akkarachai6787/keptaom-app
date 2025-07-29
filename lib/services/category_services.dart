@@ -10,6 +10,13 @@ class CategoryServices {
     return data;
   }
   
+  Future<CategoryTransaction?> fetchCategoryById(String typeId) async {
+  final doc = await FirebaseFirestore.instance.collection('types').doc(typeId).get();
+  if (!doc.exists) return null;
+  return CategoryTransaction.fromFirestore(doc);
+}
+
+
   Future<List<CategoryTransaction>> fetchCategoriesIsIncome(bool isIncome) async {
     final snapshot = await FirebaseFirestore.instance.collection('types').where('isIncome', isEqualTo: isIncome).get();
     final data = snapshot.docs

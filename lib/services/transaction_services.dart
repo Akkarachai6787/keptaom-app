@@ -28,7 +28,9 @@ class Transactionservices {
       'date': Timestamp.fromDate(date),
       'isIncome': isIncome,
       'wallet': FirebaseFirestore.instance.collection('wallets').doc(walletId),
+      'walletId': walletId,
       'type': FirebaseFirestore.instance.collection('types').doc(typeId),
+      'typeId': typeId,
     });
   }
 
