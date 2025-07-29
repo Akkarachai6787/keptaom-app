@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191792203937",
+    "project_id": "keptaom-aed2f",
+    "storage_bucket": "keptaom-aed2f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191792203937:android:0f1051479ca1a7d4f188e0",
+        "android_client_info": {
+          "package_name": "com.example.keptaom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "GoogleApiKey"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
