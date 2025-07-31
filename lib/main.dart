@@ -9,7 +9,19 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  print("🔥 Firebase apps before init: ${Firebase.apps.length}");
+
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    print("✅ Firebase initialized");
+  } on FirebaseException catch (e) {
+    if (e.code == 'duplicate-app') {
+      print("⚠️ Firebase already initialized: ${e.message}");
+    } else {
+      print("❌ Firebase init failed: ${e.message}");
+      rethrow; // Don't hide real errors
+    }
+  }
 
   runApp(const MyApp());
 }
