@@ -78,7 +78,7 @@ class TransactionItem extends StatelessWidget {
                   Text(
                     formatDate(transaction.date),
                     style: const TextStyle(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: Colors.white,
                       fontWeight: FontWeight.w300,
                     ),
