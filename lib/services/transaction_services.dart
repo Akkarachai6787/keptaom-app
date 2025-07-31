@@ -14,6 +14,26 @@ class Transactionservices {
         .toList();
   }
 
+  Future<List<TransactionModel>> getTransactionsByMonth({
+    // required String userId,
+    required int month,
+    required int year,
+  }) async {
+    final start = DateTime(year, month);
+    final end = DateTime(year, month + 1);
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('transactions')
+        // .where('userId', isEqualTo: userId) // if needed
+        .where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(start))
+        .where('date', isLessThan: Timestamp.fromDate(end))
+        .get();
+
+    return snapshot.docs
+        .map((doc) => TransactionModel.fromFirestore(doc))
+        .toList();
+  }
+
   Future<void> addTransaction({
     required String title,
     required double amount,

@@ -10,6 +10,7 @@ class TransactionModel {
   final String typeId;
   final DocumentReference? wallet;
   final String walletId;
+  DateTime get dateTime => date.toDate();
 
   TransactionModel({
     required this.id,

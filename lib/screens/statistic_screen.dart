@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:keptaom/widgets/pick_datetime.dart';
+import 'package:keptaom/widgets/pie_chart.dart';
+import 'package:keptaom/widgets/categories_item.dart';
+import 'package:keptaom/models/transaction.dart';
+import 'package:keptaom/services/transaction_services.dart';
+import 'package:keptaom/models/category_transaction.dart';
+import 'package:keptaom/services/category_services.dart';
 
 class StatisticScreen extends StatefulWidget {
   const StatisticScreen({super.key});
@@ -7,7 +15,169 @@ class StatisticScreen extends StatefulWidget {
   State<StatisticScreen> createState() => _StatisticScreenState();
 }
 
-class _StatisticScreenState extends State<StatisticScreen> {
+class _StatisticScreenState extends State<StatisticScreen>
+    with SingleTickerProviderStateMixin {
+  List<TransactionModel> transactions = [];
+  final transactionservices = Transactionservices();
+  List<CategoryTransaction?> transactionCategories = [];
+  final categoryService = CategoryServices();
+
+  Map<String, double> categoryTotals = {};
+  Map<String, double> categoryPercents = {};
+  late double totalPayment;
+
+  TabController? _tabController;
+
+  DateTime? _selectedDate;
+  String? _selectedMonthString;
+  int? _selectedMonth;
+  int? _selectedYear;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
+    final now = DateTime.now();
+    _selectedMonth = now.month;
+    _selectedYear = now.year;
+    _selectedMonthString = DateFormat.MMMM().format(now);
+    _selectedDate = DateTime(_selectedYear!, _selectedMonth!);
+
+    loadTransactions();
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
+  Future<void> loadTransactions() async {
+    final data = await transactionservices.getTransactionsByMonth(
+      month: _selectedMonth!,
+      year: _selectedYear!,
+    );
+
+    final List<Future<CategoryTransaction?>> futures = data
+        .map((tx) => CategoryServices().fetchCategoryById(tx.typeId))
+        .toList();
+
+    final categories = await Future.wait(futures);
+
+    final Map<String, CategoryTransaction> categoryMap = {};
+    final Map<String, double> totalsByCategory = {};
+
+    double totalForPercent = 0;
+    double totalNet = 0;
+
+    for (int i = 0; i < data.length; i++) {
+      final tx = data[i];
+      final cat = categories[i];
+
+      if (cat != null) {
+        final signedAmount = cat.isIncome ? tx.amount : -tx.amount;
+
+        totalsByCategory[cat.id] =
+            (totalsByCategory[cat.id] ?? 0) + signedAmount;
+        categoryMap[cat.id] = cat;
+
+        totalNet += signedAmount;
+        totalForPercent += tx.amount;
+      }
+    }
+
+    final Map<String, double> percentByCategory = {};
+    totalsByCategory.forEach((id, total) {
+      percentByCategory[id] = totalForPercent > 0
+          ? (total.abs() / totalForPercent) * 100
+          : 0;
+    });
+
+    setState(() {
+      transactions = data;
+      transactionCategories = categoryMap.values.toList();
+      categoryTotals = totalsByCategory;
+      categoryPercents = percentByCategory;
+      totalPayment = totalNet;
+    });
+  }
+
+  Future<void> _onSelectMonthYear() async {
+    final result = await MonthYearPicker.show(
+      context: context,
+      initialDate: DateTime.now(),
+    );
+
+    if (result != null) {
+      setState(() {
+        _selectedMonthString = result['monthString'];
+        _selectedMonth = result['month'];
+        _selectedYear = result['year'];
+
+        _selectedDate = DateTime(_selectedYear!, _selectedMonth!);
+      });
+
+      await loadTransactions();
+    }
+  }
+
+  Map<String, double> get pieDataMap {
+    final sortedCategories =
+        transactionCategories
+            .where((cat) => cat != null && (categoryPercents[cat.id] ?? 0) > 0)
+            .toList()
+          ..sort((a, b) {
+            final percentA = categoryPercents[a!.id] ?? 0;
+            final percentB = categoryPercents[b!.id] ?? 0;
+            return percentA.compareTo(percentB);
+          });
+
+    final Map<String, double> map = {};
+    for (var cat in sortedCategories) {
+      map[cat!.title] = categoryPercents[cat.id] ?? 0;
+    }
+    return map;
+  }
+
+  List<Color> get pieColorList {
+    final sortedCategories =
+        transactionCategories
+            .where((cat) => cat != null && (categoryPercents[cat.id] ?? 0) > 0)
+            .toList()
+          ..sort((a, b) {
+            final percentA = categoryPercents[a!.id] ?? 0;
+            final percentB = categoryPercents[b!.id] ?? 0;
+            return percentA.compareTo(percentB);
+          });
+
+    return sortedCategories
+        .map((cat) => Color(int.parse(cat!.color.replaceAll('#', '0xff'))))
+        .toList();
+  }
+
+  List<Widget> _buildCategoryList(bool isIncome) {
+    final filtered =
+        transactionCategories
+            .where((cat) => cat != null && cat.isIncome == isIncome)
+            .toList()
+          ..sort((a, b) {
+            final percentA = categoryPercents[a!.id] ?? 0;
+            final percentB = categoryPercents[b!.id] ?? 0;
+            return percentB.compareTo(percentA);
+          });
+
+    return filtered.map((category) {
+      final total = categoryTotals[category!.id] ?? 0;
+      final percent = categoryPercents[category.id] ?? 0;
+      return CategoriesItem(
+        category: category,
+        totalAmount: total,
+        percent: percent,
+      );
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,14 +206,12 @@ class _StatisticScreenState extends State<StatisticScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Total Balance',
+                    'Income & Expense',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                   SizedBox(
                     child: ElevatedButton(
-                      onPressed: () {
-                        print('Button pressed!');
-                      },
+                      onPressed: _onSelectMonthYear,
                       style: ElevatedButton.styleFrom(
                         side: const BorderSide(
                           color: Color(0xFF4b5563),
@@ -61,7 +229,9 @@ class _StatisticScreenState extends State<StatisticScreen> {
                       child: Row(
                         children: [
                           Text(
-                            'Select Month',
+                            _selectedDate == null
+                                ? 'Select M & Y'
+                                : '$_selectedMonthString $_selectedYear',
                             style: const TextStyle(color: Colors.white),
                           ),
                           const Icon(
@@ -73,6 +243,55 @@ class _StatisticScreenState extends State<StatisticScreen> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(height: 60),
+              Center(
+                child: pieDataMap.isEmpty
+                    ? Column(
+                        children: [
+                          Icon(Icons.manage_search_rounded, size: 60),
+                          SizedBox(height: 6),
+                          Text(
+                            'No data to display',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      )
+                    : PieChartWidget(
+                        dataMap: pieDataMap,
+                        colorList: pieColorList,
+                        totalPayment: totalPayment,
+                      ),
+              ),
+
+              SizedBox(height: 30),
+              TabBar(
+                controller: _tabController,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: Colors.teal[600],
+                tabs: const [
+                  Tab(text: 'Income'),
+                  Tab(text: 'Expense'),
+                ],
+              ),
+              Container(height: 0.3, color: const Color(0xFF4b5563)),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(children: _buildCategoryList(true)),
+                    ),
+                    SingleChildScrollView(
+                      child: Column(children: _buildCategoryList(false)),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
