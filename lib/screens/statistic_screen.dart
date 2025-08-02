@@ -26,6 +26,8 @@ class _StatisticScreenState extends State<StatisticScreen>
   Map<String, double> categoryPercents = {};
   late double totalPayment;
 
+  Map<String, List<TransactionModel>> categoryTransactionsMap = {};
+
   TabController? _tabController;
 
   DateTime? _selectedDate;
@@ -36,8 +38,18 @@ class _StatisticScreenState extends State<StatisticScreen>
   @override
   void initState() {
     super.initState();
+    _initPage();
     _tabController = TabController(length: 2, vsync: this);
 
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initPage() async {
     final now = DateTime.now();
     _selectedMonth = now.month;
     _selectedYear = now.year;
@@ -45,12 +57,6 @@ class _StatisticScreenState extends State<StatisticScreen>
     _selectedDate = DateTime(_selectedYear!, _selectedMonth!);
 
     loadTransactions();
-  }
-
-  @override
-  void dispose() {
-    _tabController?.dispose();
-    super.dispose();
   }
 
   Future<void> loadTransactions() async {
@@ -68,6 +74,8 @@ class _StatisticScreenState extends State<StatisticScreen>
     final Map<String, CategoryTransaction> categoryMap = {};
     final Map<String, double> totalsByCategory = {};
 
+    final Map<String, List<TransactionModel>> groupedTransactions = {};
+
     double totalForPercent = 0;
     double totalNet = 0;
 
@@ -84,6 +92,9 @@ class _StatisticScreenState extends State<StatisticScreen>
 
         totalNet += signedAmount;
         totalForPercent += tx.amount;
+
+        groupedTransactions[cat.id] = (groupedTransactions[cat.id] ?? [])
+          ..add(tx);
       }
     }
 
@@ -100,6 +111,7 @@ class _StatisticScreenState extends State<StatisticScreen>
       categoryTotals = totalsByCategory;
       categoryPercents = percentByCategory;
       totalPayment = totalNet;
+      categoryTransactionsMap = groupedTransactions;
     });
   }
 
@@ -170,10 +182,15 @@ class _StatisticScreenState extends State<StatisticScreen>
     return filtered.map((category) {
       final total = categoryTotals[category!.id] ?? 0;
       final percent = categoryPercents[category.id] ?? 0;
+
       return CategoriesItem(
         category: category,
         totalAmount: total,
         percent: percent,
+        transactions: categoryTransactionsMap[category.id] ?? [],
+        month: _selectedMonthString ?? 'Unknown',
+        year: _selectedYear ?? DateTime.now().year,
+        onRefresh: _initPage,
       );
     }).toList();
   }
