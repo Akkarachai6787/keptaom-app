@@ -50,8 +50,20 @@ class ExpenseProgressWidget extends StatelessWidget {
           ],
           Text(
             leftRecommended >= 0
-                ? '${expensePercent.toStringAsFixed(2)}% of your recommended budget used\n($leftRecommended ฿ remaining)'
-                : "You’ve exceeded your budget\n(${leftRecommended.abs()} ฿ over)",
+                ? '${expensePercent.toStringAsFixed(2)}% of your recommended budget used'
+                : "You’ve exceeded your budget",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 4),
+          Text(
+            leftRecommended >= 0
+                ? '($leftRecommended ฿ remaining)'
+                : '(${leftRecommended.abs()} ฿ over)',
             style: TextStyle(
               color: textColor,
               fontWeight: FontWeight.w500,
