@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:keptaom/widgets/pick_datetime.dart';
 import 'package:keptaom/widgets/pie_chart.dart';
+import 'package:keptaom/widgets/progress_widget.dart';
 import 'package:keptaom/widgets/categories_item.dart';
 import 'package:keptaom/models/transaction.dart';
 import 'package:keptaom/services/transaction_services.dart';
@@ -24,7 +25,10 @@ class _StatisticScreenState extends State<StatisticScreen>
 
   Map<String, double> categoryTotals = {};
   Map<String, double> categoryPercents = {};
-  late double totalPayment;
+  double totalPayment = 0.0;
+  double expensePer = 0.0;
+  double recommendExpense = 0.0;
+  double leftRec = 0.0;
 
   Map<String, List<TransactionModel>> categoryTransactionsMap = {};
 
@@ -39,8 +43,15 @@ class _StatisticScreenState extends State<StatisticScreen>
   void initState() {
     super.initState();
     _initPage();
-    _tabController = TabController(length: 2, vsync: this);
 
+    final now = DateTime.now();
+    _selectedMonth = now.month;
+    _selectedYear = now.year;
+    _selectedMonthString = DateFormat.MMMM().format(now);
+    _selectedDate = DateTime(_selectedYear!, _selectedMonth!);
+
+    _tabController = TabController(length: 2, vsync: this);
+    loadTransactions();
   }
 
   @override
@@ -50,12 +61,6 @@ class _StatisticScreenState extends State<StatisticScreen>
   }
 
   Future<void> _initPage() async {
-    final now = DateTime.now();
-    _selectedMonth = now.month;
-    _selectedYear = now.year;
-    _selectedMonthString = DateFormat.MMMM().format(now);
-    _selectedDate = DateTime(_selectedYear!, _selectedMonth!);
-
     loadTransactions();
   }
 
@@ -66,7 +71,7 @@ class _StatisticScreenState extends State<StatisticScreen>
     );
 
     final List<Future<CategoryTransaction?>> futures = data
-        .map((tx) => CategoryServices().fetchCategoryById(tx.typeId))
+        .map((tx) => categoryService.fetchCategoryById(tx.typeId))
         .toList();
 
     final categories = await Future.wait(futures);
@@ -79,12 +84,20 @@ class _StatisticScreenState extends State<StatisticScreen>
     double totalForPercent = 0;
     double totalNet = 0;
 
+    double sumIncome = 0;
+    double sumExpense = 0;
+    double recExpense = 0;
+    double expensePercent = 0;
+    double leftRecommend = 0;
+
     for (int i = 0; i < data.length; i++) {
       final tx = data[i];
       final cat = categories[i];
 
       if (cat != null) {
         final signedAmount = cat.isIncome ? tx.amount : -tx.amount;
+
+        cat.isIncome ? sumIncome += tx.amount : sumExpense += tx.amount;
 
         totalsByCategory[cat.id] =
             (totalsByCategory[cat.id] ?? 0) + signedAmount;
@@ -105,6 +118,10 @@ class _StatisticScreenState extends State<StatisticScreen>
           : 0;
     });
 
+    recExpense = (sumIncome * 0.35);
+    expensePercent = recExpense > 0 ? (sumExpense / recExpense) * 100 : 0;
+    leftRecommend = recExpense - sumExpense;
+
     setState(() {
       transactions = data;
       transactionCategories = categoryMap.values.toList();
@@ -112,13 +129,16 @@ class _StatisticScreenState extends State<StatisticScreen>
       categoryPercents = percentByCategory;
       totalPayment = totalNet;
       categoryTransactionsMap = groupedTransactions;
+      recommendExpense = recExpense;
+      expensePer = expensePercent;
+      leftRec = leftRecommend;
     });
   }
 
   Future<void> _onSelectMonthYear() async {
     final result = await MonthYearPicker.show(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _selectedDate == null ? DateTime.now() : _selectedDate!,
     );
 
     if (result != null) {
@@ -155,7 +175,7 @@ class _StatisticScreenState extends State<StatisticScreen>
   List<Color> get pieColorList {
     final sortedCategories =
         transactionCategories
-            .where((cat) => cat != null && (categoryPercents[cat.id] ?? 0) > 0)
+            .where((cat) => cat != null && (categoryPercents[cat.id] ?? 0) > 0.0)
             .toList()
           ..sort((a, b) {
             final percentA = categoryPercents[a!.id] ?? 0;
@@ -285,7 +305,17 @@ class _StatisticScreenState extends State<StatisticScreen>
                       ),
               ),
 
-              SizedBox(height: 30),
+              SizedBox(height: pieDataMap.isEmpty ? 30 : 46),
+              SizedBox(
+                child: pieDataMap.isEmpty
+                    ? Text('')
+                    : ExpenseProgressWidget(
+                        expensePercent: expensePer,
+                        leftRecommended: leftRec,
+                        isPositive: expensePer <= 100,
+                      ),
+              ),
+              SizedBox(height: 12),
               TabBar(
                 controller: _tabController,
                 labelColor: Colors.white,

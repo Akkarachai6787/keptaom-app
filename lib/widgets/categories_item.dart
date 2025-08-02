@@ -15,7 +15,7 @@ class CategoriesItem extends StatelessWidget {
   final VoidCallback? onRefresh;
 
   const CategoriesItem({
-    Key? key,
+    super.key,
     required this.category,
     required this.totalAmount,
     required this.percent,
@@ -23,7 +23,7 @@ class CategoriesItem extends StatelessWidget {
     required this.month,
     required this.year,
     this.onRefresh,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
