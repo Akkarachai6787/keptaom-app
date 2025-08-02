@@ -38,6 +38,7 @@ class _StatisticScreenState extends State<StatisticScreen>
   String? _selectedMonthString;
   int? _selectedMonth;
   int? _selectedYear;
+  int _currentTabIndex = 0;
 
   @override
   void initState() {
@@ -51,6 +52,14 @@ class _StatisticScreenState extends State<StatisticScreen>
     _selectedDate = DateTime(_selectedYear!, _selectedMonth!);
 
     _tabController = TabController(length: 2, vsync: this);
+    _tabController!.addListener(() {
+      if (!_tabController!.indexIsChanging) {
+        setState(() {
+          _currentTabIndex = _tabController!.index;
+        });
+      }
+    });
+
     loadTransactions();
   }
 
@@ -175,7 +184,9 @@ class _StatisticScreenState extends State<StatisticScreen>
   List<Color> get pieColorList {
     final sortedCategories =
         transactionCategories
-            .where((cat) => cat != null && (categoryPercents[cat.id] ?? 0) > 0.0)
+            .where(
+              (cat) => cat != null && (categoryPercents[cat.id] ?? 0) > 0.0,
+            )
             .toList()
           ..sort((a, b) {
             final percentA = categoryPercents[a!.id] ?? 0;
@@ -320,7 +331,10 @@ class _StatisticScreenState extends State<StatisticScreen>
                 controller: _tabController,
                 labelColor: Colors.white,
                 unselectedLabelColor: Colors.grey,
-                indicatorColor: Colors.teal[600],
+                indicatorColor: _currentTabIndex == 0
+                    ? Colors.teal[600]
+                    : Colors.red[600],
+
                 tabs: const [
                   Tab(text: 'Income'),
                   Tab(text: 'Expense'),
