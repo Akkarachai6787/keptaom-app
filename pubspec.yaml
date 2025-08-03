@@ -33,6 +33,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   firebase_core: ^3.13.1
   cloud_firestore: ^5.6.8
+  firebase_auth: ^5.5.4
   flutter_dotenv: ^5.0.2
   intl: ^0.20.2
   pie_chart: ^5.1.0
@@ -66,6 +67,7 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
+    - assets/icons/KeptAom.png
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see

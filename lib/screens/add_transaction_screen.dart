@@ -498,8 +498,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         color: const Color(0xFF25292c),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                            color: const Color(0xFF4b5563),
-                            width: 0.3,
+                          color: const Color(0xFF4b5563),
+                          width: 0.3,
                         ),
                       ),
                       child: TextButton(
@@ -530,10 +530,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
             child: ElevatedButton(
               onPressed: _saveTransaction,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal[800],
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                backgroundColor: const Color(0xFF202020),
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 60),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadiusGeometry.circular(12),
+                  side: BorderSide(color: const Color(0xFFc2c2c2), width: 2),
                 ),
               ),
               child: const Text(
