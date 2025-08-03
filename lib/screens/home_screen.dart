@@ -8,6 +8,7 @@ import 'package:keptaom/services/transaction_services.dart';
 import 'package:keptaom/widgets/transaction_item.dart';
 import 'package:keptaom/models/category_transaction.dart';
 import 'package:keptaom/services/category_services.dart';
+import 'package:keptaom/services/auth_services.dart';
 import 'add_transaction_screen.dart';
 
 class Home extends StatefulWidget {
@@ -26,6 +27,7 @@ class _HomeContentState extends State<Home> {
   final transactionservices = Transactionservices();
   List<CategoryTransaction?> transactionCategories = [];
   final categoryService = CategoryServices();
+  final authService = AuthService();
 
   @override
   void initState() {
@@ -178,8 +180,8 @@ class _HomeContentState extends State<Home> {
                         backgroundColor: const Color(0xff343434),
                         shape: RoundedRectangleBorder(
                           side: BorderSide.none,
-                          borderRadius: BorderRadiusGeometry.circular(12)
-                        )
+                          borderRadius: BorderRadiusGeometry.circular(12),
+                        ),
                       ),
                       onPressed: () => Navigator.pop(context),
                       child: Text(
@@ -195,8 +197,8 @@ class _HomeContentState extends State<Home> {
                         backgroundColor: Colors.red[400],
                         shape: RoundedRectangleBorder(
                           side: BorderSide.none,
-                          borderRadius: BorderRadiusGeometry.circular(12)
-                        )
+                          borderRadius: BorderRadiusGeometry.circular(12),
+                        ),
                       ),
                       onPressed: () {
                         confirmed = true;
@@ -220,9 +222,12 @@ class _HomeContentState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final user = authService.currentUser;
+
     return Scaffold(
       backgroundColor: const Color(0xFF202020),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF202020),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
@@ -234,10 +239,12 @@ class _HomeContentState extends State<Home> {
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 6),
-            Text(
-              '$name !',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-            ),
+            user != null
+                ? Text('${user.email}')
+                : Text(
+                    '$name !',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
           ],
         ),
       ),
@@ -402,7 +409,9 @@ class _HomeContentState extends State<Home> {
                     title: Text(
                       action,
                       style: TextStyle(
-                        color: action == 'Edit' ? Colors.white : Colors.red[400],
+                        color: action == 'Edit'
+                            ? Colors.white
+                            : Colors.red[400],
                       ),
                     ),
 

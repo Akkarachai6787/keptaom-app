@@ -25,18 +25,26 @@ class AuthService {
 
       return null;
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      return _mapFirebaseErrorToMessage(e);
+    } catch (e) {
+      return 'An unknown error occurred. Please try again.';
     }
   }
 
   String _mapFirebaseErrorToMessage(FirebaseAuthException e) {
     switch (e.code) {
+      case 'email-already-in-use':
+        return 'This email is already in use. Try logging in.';
+      case 'invalid-email':
+        return 'The email address is not valid.';
+      case 'operation-not-allowed':
+        return 'Email/password accounts are not enabled.';
+      case 'weak-password':
+        return 'The password is too weak. Please choose a stronger one.';
       case 'user-not-found':
         return 'No user found with this email.';
       case 'wrong-password':
         return 'Incorrect password.';
-      case 'invalid-email':
-        return 'Invalid email format.';
       case 'user-disabled':
         return 'This user account has been disabled.';
       default:

@@ -14,7 +14,9 @@ void main() async {
   print("🔥 Firebase apps before init: ${Firebase.apps.length}");
 
   try {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     print("✅ Firebase initialized");
   } on FirebaseException catch (e) {
     if (e.code == 'duplicate-app') {
@@ -63,9 +65,9 @@ class AuthGate extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasData) {
-          return const HomeScreen(); 
+          return const HomeScreen();
         } else {
-          return const LandingScreen(); 
+          return const LandingScreen();
         }
       },
     );
@@ -86,7 +88,11 @@ class _HomeScreenState extends State<HomeScreen> {
     Home(),
     StatisticScreen(),
     Center(child: Text("Wishlists", style: TextStyle(fontSize: 18))),
-    Center(child: Text("Account", style: TextStyle(fontSize: 18))),
+    Column(
+      children: [
+        Center(child: Text("Account", style: TextStyle(fontSize: 18))),
+      ],
+    ),
   ];
 
   @override
@@ -97,15 +103,11 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           color: const Color(0xFF191919),
           border: Border(
-            top: BorderSide(
-              color: const Color(0xFF999999),
-              width: 0.5,
-            ),
+            top: BorderSide(color: const Color(0xFF999999), width: 0.5),
           ),
         ),
         child: BottomNavigationBar(
-          backgroundColor:
-              Colors.transparent,
+          backgroundColor: Colors.transparent,
           type: BottomNavigationBarType.fixed,
           currentIndex: _selectedIndex,
           onTap: (index) {
