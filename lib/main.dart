@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'screens/landing_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/statistic_screen.dart';
+import 'screens/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -88,11 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Home(),
     StatisticScreen(),
     Center(child: Text("Wishlists", style: TextStyle(fontSize: 18))),
-    Column(
-      children: [
-        Center(child: Text("Account", style: TextStyle(fontSize: 18))),
-      ],
-    ),
+    ProfileScreen(),
   ];
 
   @override
