@@ -47,6 +47,8 @@ class AuthService {
         return 'Incorrect password.';
       case 'user-disabled':
         return 'This user account has been disabled.';
+      case 'invalid-credential':
+        return 'Incorrect password.';
       default:
         return 'Authentication error: ${e.message}';
     }
@@ -68,7 +70,7 @@ class AuthService {
 
   // Sign out
   Future<void> signOut() async {
-    await _auth.signOut();
+      await _auth.signOut();
   }
 
   // Current user

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:keptaom/services/wallet_services.dart';
 import 'package:keptaom/models/wallet.dart';
@@ -28,12 +29,21 @@ class _HomeContentState extends State<Home> {
   List<CategoryTransaction?> transactionCategories = [];
   final categoryService = CategoryServices();
   final authService = AuthService();
+  User? user;
 
   @override
   void initState() {
     super.initState();
+    loadUser();
     loadWallets();
     loadTransactions();
+  }
+
+  Future<void> loadUser() async {
+    final currentUser = authService.currentUser;
+    setState(() {
+      user = currentUser;
+    });
   }
 
   Future<void> loadWallets() async {
@@ -222,8 +232,6 @@ class _HomeContentState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final user = authService.currentUser;
-
     return Scaffold(
       backgroundColor: const Color(0xFF202020),
       appBar: AppBar(
@@ -240,9 +248,12 @@ class _HomeContentState extends State<Home> {
             ),
             SizedBox(height: 6),
             user != null
-                ? Text('${user.email}')
+                ? Text(
+                    '${user!.email}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  )
                 : Text(
-                    '$name !',
+                    '$name!',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
           ],
