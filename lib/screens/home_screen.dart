@@ -62,9 +62,9 @@ class _HomeContentState extends State<Home> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Color(0xFF1f2937),
+          backgroundColor: Color(0xFF292e31),
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: const Color(0xFF4b5563), width: 0.5),
+            side: BorderSide(color: const Color(0xFFc2c2c2), width: 0.3),
           ),
           content: Row(
             children: [
@@ -143,7 +143,7 @@ class _HomeContentState extends State<Home> {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF111827),
+      backgroundColor: const Color(0xFF202020),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -158,7 +158,7 @@ class _HomeContentState extends State<Home> {
                 'Delete Wallet',
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
@@ -175,12 +175,11 @@ class _HomeContentState extends State<Home> {
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(
-                          38,
-                          178,
-                          223,
-                          219,
-                        ),
+                        backgroundColor: const Color(0xff343434),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide.none,
+                          borderRadius: BorderRadiusGeometry.circular(12)
+                        )
                       ),
                       onPressed: () => Navigator.pop(context),
                       child: Text(
@@ -194,6 +193,10 @@ class _HomeContentState extends State<Home> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red[400],
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide.none,
+                          borderRadius: BorderRadiusGeometry.circular(12)
+                        )
                       ),
                       onPressed: () {
                         confirmed = true;
@@ -218,9 +221,9 @@ class _HomeContentState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF111827),
+      backgroundColor: const Color(0xFF202020),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF111827),
+        backgroundColor: const Color(0xFF202020),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
@@ -285,15 +288,15 @@ class _HomeContentState extends State<Home> {
                     ),
                     border: Border(
                       left: BorderSide(
-                        color: const Color(0xFF4b5563),
+                        color: const Color(0xFF858585),
                         width: 0.3,
                       ),
                       right: BorderSide(
-                        color: const Color(0xFF4b5563),
+                        color: const Color(0xFF858585),
                         width: 0.3,
                       ),
                       top: BorderSide(
-                        color: const Color(0xFF4b5563),
+                        color: const Color(0xFF858585),
                         width: 0.3,
                       ),
                     ),
@@ -354,7 +357,7 @@ class _HomeContentState extends State<Home> {
   void _showBottomSheet(BuildContext context, String label) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF111827),
+      backgroundColor: const Color(0xFF202020),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -366,9 +369,9 @@ class _HomeContentState extends State<Home> {
             children: [
               Text(
                 label,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 0),
               ...['Edit', 'Delete'].map((action) {
                 return Container(
                   margin: EdgeInsets.symmetric(vertical: 4),
@@ -376,7 +379,7 @@ class _HomeContentState extends State<Home> {
                     borderRadius: BorderRadius.zero,
                     border: Border(
                       bottom: BorderSide(
-                        color: const Color(0xFF4b5563),
+                        color: const Color(0xFF858585),
                         width: 0.3,
                       ),
                     ),
@@ -385,21 +388,24 @@ class _HomeContentState extends State<Home> {
                     leading: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(38, 178, 223, 219),
+                        color: const Color(0xFF343434),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
                         action == 'Edit' ? Icons.edit : Icons.delete,
                         color: action == 'Edit'
-                            ? Colors.teal[400]
+                            ? Colors.white
                             : Colors.red[400],
                         size: 20,
                       ),
                     ),
                     title: Text(
                       action,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: action == 'Edit' ? Colors.white : Colors.red[400],
+                      ),
                     ),
+
                     onTap: () async {
                       Navigator.pop(context);
                       final wallet = wallets.firstWhere(

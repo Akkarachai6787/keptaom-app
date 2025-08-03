@@ -25,7 +25,7 @@ class ExpenseProgressWidget extends StatelessWidget {
       progressColor = Colors.red[600]!;
     }
 
-    final backgroundColor = Color(0xFF1f2937);
+    final backgroundColor = Color(0xFF292e31);
     final textColor = leftRecommended < 0 ? Colors.red[600]! : Colors.white;
 
     return Container(
@@ -51,7 +51,7 @@ class ExpenseProgressWidget extends StatelessWidget {
           Text(
             leftRecommended >= 0
                 ? '${expensePercent.toStringAsFixed(2)}% of your recommended budget used'
-                : "You’ve exceeded your budget",
+                : "You've exceeded your budget",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w500,

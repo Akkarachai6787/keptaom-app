@@ -16,13 +16,13 @@ class DropdownTypesSelectorSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFF1e293b),
+        color: Color(0xFF202020),
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: ListView.separated(
         padding: const EdgeInsets.all(8),
         itemCount: docs.length,
-        separatorBuilder: (_, __) => const Divider(color: Color(0xFF4b5563)),
+        separatorBuilder: (_, __) => const Divider(color: Color(0xFF858585)),
         itemBuilder: (context, index) {
           final doc = docs[index];
           return ListTile(
@@ -52,13 +52,13 @@ class DropdownWalletsSelectorSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFF1e293b),
+        color: Color(0xFF202020),
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: ListView.separated(
         padding: const EdgeInsets.all(8),
         itemCount: docs.length,
-        separatorBuilder: (_, __) => const Divider(color: Color(0xFF4b5563)),
+        separatorBuilder: (_, __) => const Divider(color: Color(0xFF858585)),
         itemBuilder: (context, index) {
           final doc = docs[index];
           return ListTile(

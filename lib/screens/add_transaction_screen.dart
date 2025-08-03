@@ -99,34 +99,34 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-          backgroundColor: Color(0xFF1f2937),
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: const Color(0xFF4b5563), width: 0.5),
-          ),
-          content: Row(
-            children: [
-              Icon(Icons.check_circle_outline, color: Colors.teal),
-              SizedBox(width: 12),
-              Expanded(
-                child: Text(
+            backgroundColor: Color(0xFF292e31),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: const Color(0xFFc2c2c2), width: 0.3),
+            ),
+            content: Row(
+              children: [
+                Icon(Icons.check_circle_outline, color: Colors.teal),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Text(
                     'Add "$title" successfully',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
         );
 
         Navigator.pop(context, true);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-          backgroundColor: Color(0xFF1f2937),
+            backgroundColor: Color(0xFF1f2937),
             content: Row(
               children: [
                 Icon(Icons.error, color: Colors.red),
@@ -172,7 +172,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: false,
-      builder: (_) => DropdownWalletsSelectorSheet(docs: docs, fieldGetter: fieldGetter),
+      builder: (_) =>
+          DropdownWalletsSelectorSheet(docs: docs, fieldGetter: fieldGetter),
     );
   }
 
@@ -193,8 +194,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xFF202020),
         title: Text('Add Transaction'),
-        backgroundColor: const Color(0xFF111827),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -215,12 +216,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       label: Text('Income'),
                       selected: _isIncome,
                       onSelected: (val) => _toggleIncome(true),
-                      selectedColor: Colors.teal[500],
+                      selectedColor: Colors.teal[600],
                       labelStyle: TextStyle(
-                        color: _isIncome ? Colors.white : Colors.grey,
+                        color: _isIncome ? Colors.white : Colors.white70,
                         fontWeight: FontWeight.w500,
                       ),
-                      backgroundColor: Color(0xFF1e293b),
+                      backgroundColor: Color(0xFF25292c),
                     ),
                     const SizedBox(width: 6),
                     ChoiceChip(
@@ -232,12 +233,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       ),
                       selected: !_isIncome,
                       onSelected: (val) => _toggleIncome(false),
-                      selectedColor: Colors.red[500],
+                      selectedColor: Colors.red[600],
                       labelStyle: TextStyle(
-                        color: !_isIncome ? Colors.white : Colors.grey,
+                        color: !_isIncome ? Colors.white : Colors.white70,
                         fontWeight: FontWeight.w500,
                       ),
-                      backgroundColor: Color(0xFF1e293b),
+                      backgroundColor: Color(0xFF25292c),
                     ),
                   ],
                 ),
@@ -261,8 +262,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: Color(0xFF4b5563),
-                                width: 2.5,
+                                color: Color(0xFFc2c2c2),
+                                width: 2,
                               ),
                             ),
                             focusedBorder: UnderlineInputBorder(
@@ -287,7 +288,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                             fillColor: Colors.transparent,
                             hintText: '0',
                             hintStyle: TextStyle(
-                              color: Colors.grey,
+                              color: Colors.white70,
                               fontSize: 50,
                             ),
                             contentPadding: EdgeInsets.symmetric(vertical: 12),
@@ -319,7 +320,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       const SizedBox(width: 12),
                       const Text(
                         '฿',
-                        style: TextStyle(color: Colors.grey, fontSize: 40),
+                        style: TextStyle(color: Colors.white70, fontSize: 40),
                       ),
                     ],
                   ),
@@ -355,17 +356,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Color(0xFF4b5563),
-                        width: 0.3,
-                      ),
-                      backgroundColor: const Color(0xFF1e293b),
-                      padding: const EdgeInsets.symmetric(
+                      backgroundColor: const Color(0xFF202020),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
                         horizontal: 16,
-                        vertical: 14,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadiusGeometry.circular(12),
+                        side: BorderSide(
+                          color: const Color(0xFFc2c2c2),
+                          width: 0.5,
+                        ),
                       ),
                     ),
                     child: Row(
@@ -410,7 +411,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   ),
 
                 SizedBox(height: 16),
-                
+
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -428,17 +429,17 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Color(0xFF4b5563),
-                        width: 0.3,
-                      ),
-                      backgroundColor: const Color(0xFF1e293b),
-                      padding: const EdgeInsets.symmetric(
+                      backgroundColor: const Color(0xFF202020),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
                         horizontal: 16,
-                        vertical: 14,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadiusGeometry.circular(12),
+                        side: BorderSide(
+                          color: const Color(0xFFc2c2c2),
+                          width: 0.5,
+                        ),
                       ),
                     ),
                     child: Row(
@@ -446,7 +447,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.account_balance_wallet, color: Colors.white),
+                            const Icon(
+                              Icons.account_balance_wallet,
+                              color: Colors.white,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               _selectedWalletId != null
@@ -491,25 +495,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1e293b),
+                        color: const Color(0xFF25292c),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border(
-                          top: BorderSide(
+                        border: Border.all(
                             color: const Color(0xFF4b5563),
                             width: 0.3,
-                          ),
-                          bottom: BorderSide(
-                            color: const Color(0xFF4b5563),
-                            width: 0.3,
-                          ),
-                          left: BorderSide(
-                            color: const Color(0xFF4b5563),
-                            width: 0.3,
-                          ),
-                          right: BorderSide(
-                            color: const Color(0xFF4b5563),
-                            width: 0.3,
-                          ),
                         ),
                       ),
                       child: TextButton(

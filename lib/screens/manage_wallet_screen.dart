@@ -42,9 +42,9 @@ class _ManagewalletState extends State<Managewallet> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-          backgroundColor: Color(0xFF1f2937),
+          backgroundColor: Color(0xFF292e31),
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: const Color(0xFF4b5563), width: 0.5),
+            side: BorderSide(color: const Color(0xFFc2c2c2), width: 0.3),
           ),
           content: Row(
             children: [
@@ -99,7 +99,7 @@ class _ManagewalletState extends State<Managewallet> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.wallet == null ? 'Add new wallet' : 'Edit wallet'),
-        backgroundColor: const Color(0xFF111827),
+        backgroundColor: const Color(0xFF202020),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -184,16 +184,20 @@ class _ManagewalletState extends State<Managewallet> {
                 ),
               ),
 
-              SizedBox(height: 24),
+              SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _saveWallet,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal[800],
+                    backgroundColor: const Color(0xFF202020),
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 60),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadiusGeometry.circular(12),
+                      side: BorderSide(
+                        color: const Color(0xFFc2c2c2),
+                        width: 2
+                      )
                     ),
                   ),
                   child: Text(

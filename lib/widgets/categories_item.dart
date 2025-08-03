@@ -49,9 +49,9 @@ class CategoriesItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF1f2937),
+          color: const Color(0xFF292e31),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFF4b5563), width: 0.3),
+          border: Border.all(color: const Color(0xFF292e31), width: 0.3),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -76,7 +76,7 @@ class CategoriesItem extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -87,7 +87,7 @@ class CategoriesItem extends StatelessWidget {
                   '${category.isIncome ? '' : '-'}${NumberFormat("#,##0.00", "en_US").format(totalAmount.abs())} ฿',
 
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: Colors.white,
                   ),

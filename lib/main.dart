@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         fontFamily: 'Prompt',
         primaryColor: Colors.teal,
-        scaffoldBackgroundColor: const Color(0xFF111827),
+        scaffoldBackgroundColor: const Color(0xFF202020),
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
@@ -71,10 +71,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF030712),
+          color: const Color(0xFF191919),
           border: Border(
             top: BorderSide(
-              color: const Color(0xFF4b5563),
+              color: const Color(0xFF999999),
               width: 0.5,
             ),
           ),

@@ -41,9 +41,9 @@ class TransactionItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF1f2937),
+          color: const Color(0xFF292e31),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFF4b5563), width: 0.3),
+          border: Border.all(color: const Color(0xFF292e31), width: 0.3),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

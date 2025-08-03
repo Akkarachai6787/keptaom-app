@@ -8,18 +8,21 @@ class DateTimePicker {
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: initialDateTime,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.dark(
-              primary: Colors.teal.shade600,
+              primary: Color(0xFF292e31),
               onPrimary: Colors.white,
-              surface: const Color(0xFF1f2937),
+              surface: const Color(0xFF202020),
               onSurface: Colors.white,
             ),
-            dialogBackgroundColor: Colors.black87,
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Colors.white),
+            ),
           ),
           child: child!,
         );
@@ -35,18 +38,21 @@ class DateTimePicker {
         return Theme(
           data: Theme.of(context).copyWith(
             timePickerTheme: TimePickerThemeData(
-              backgroundColor: const Color(0xFF1f2937),
+              backgroundColor: const Color(0xFF202020),
               hourMinuteTextColor: Colors.white,
-              dialHandColor: Colors.teal.shade900,
-              dialBackgroundColor: Colors.teal.shade600,
+              dialHandColor: const Color(0xFF1C1F21),
+              dialBackgroundColor: const Color(0xFF292e31),
               dayPeriodTextColor: Colors.white,
-              entryModeIconColor: Colors.teal,
+              entryModeIconColor: Colors.white,
             ),
             colorScheme: ColorScheme.dark(
-              primary: Colors.teal,
+              primary: const Color(0xFF292e31),
               onPrimary: Colors.white,
-              surface: const Color(0xFF1f2937),
+              surface: const Color(0xFF202020),
               onSurface: Colors.white,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Colors.white),
             ),
           ),
           child: child!,
@@ -65,6 +71,7 @@ class DateTimePicker {
     );
   }
 }
+
 class MonthYearPicker {
   static Future<Map<String, dynamic>?> show({
     required BuildContext context,
@@ -83,8 +90,18 @@ class MonthYearPicker {
     int selectedMonth = initialDate.month;
 
     final List<String> monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
 
     return showDialog<Map<String, dynamic>>(
@@ -93,7 +110,7 @@ class MonthYearPicker {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              backgroundColor: const Color(0xFF1f2937),
+              backgroundColor: const Color(0xFF202020),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -114,7 +131,7 @@ class MonthYearPicker {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     DropdownButton<int>(
-                      dropdownColor: const Color(0xFF1f2937),
+                      dropdownColor: const Color(0xFF292e31),
                       value: selectedMonth,
                       items: List.generate(12, (index) {
                         final month = index + 1;
@@ -138,7 +155,7 @@ class MonthYearPicker {
                     ),
                     const SizedBox(width: 16),
                     DropdownButton<int>(
-                      dropdownColor: const Color(0xFF1f2937),
+                      dropdownColor: const Color(0xFF292e31),
                       value: selectedYear,
                       items: List.generate(endYear! - startYear + 1, (index) {
                         final year = startYear + index;
@@ -169,8 +186,10 @@ class MonthYearPicker {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(null),
-                  child: const Text('Cancel',
-                      style: TextStyle(color: Colors.teal)),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -180,8 +199,7 @@ class MonthYearPicker {
                       'monthString': monthNames[selectedMonth - 1],
                     });
                   },
-                  child: const Text('OK',
-                      style: TextStyle(color: Colors.teal)),
+                  child: const Text('OK', style: TextStyle(color: Colors.white)),
                 ),
               ],
             );

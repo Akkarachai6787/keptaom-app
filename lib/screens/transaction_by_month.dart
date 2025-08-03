@@ -97,9 +97,9 @@ class _TransactionByMonthState extends State<TransactionByMonth> {
       },
 
       child: Scaffold(
-        backgroundColor: const Color(0xFF111827),
+        backgroundColor: const Color(0xFF202020),
         appBar: AppBar(
-          backgroundColor: const Color(0xFF111827),
+          backgroundColor: const Color(0xFF202020),
           title: Text(
             '${widget.category.title} - ${widget.month} ${widget.year}',
           ),
@@ -145,10 +145,10 @@ class _TransactionByMonthState extends State<TransactionByMonth> {
                   vertical: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1f2937),
+                  color: const Color(0xFF292e31),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: const Color(0xFF4b5563),
+                    color: const Color(0xFF292e31),
                     width: 0.3,
                   ),
                 ),

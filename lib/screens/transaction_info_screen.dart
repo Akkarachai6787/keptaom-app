@@ -60,9 +60,10 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
     final transaction = widget.transaction;
 
     return Scaffold(
+      backgroundColor: const Color(0xFF202020),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF202020),
         title: Text('Transaction Info'),
-        backgroundColor: const Color(0xFF111827),
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert),
@@ -79,8 +80,6 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
           ),
         ],
       ),
-
-      backgroundColor: const Color(0xFF111827),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
@@ -139,13 +138,12 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
                     ),
                     margin: const EdgeInsets.only(bottom: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1f2937),
+                      color: const Color(0xFF202020),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Color(0xFF4b5563), width: 0.3),
+                      border: Border.all(color: Color(0xFFc2c2c2), width: 0.2),
                     ),
                     child: Column(
-                      mainAxisSize:
-                          MainAxisSize.min,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -264,7 +262,7 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
     final result = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF111827),
+      backgroundColor: const Color(0xFF202020),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -279,7 +277,7 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
                 'Delete Transaction',
                 style: TextStyle(
                   fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
@@ -296,11 +294,10 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(
-                          38,
-                          178,
-                          223,
-                          219,
+                        backgroundColor: const Color(0xff343434),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide.none,
+                          borderRadius: BorderRadiusGeometry.circular(12),
                         ),
                       ),
                       onPressed: () => Navigator.pop(context, false),
@@ -315,6 +312,10 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red[400],
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide.none,
+                          borderRadius: BorderRadiusGeometry.circular(12),
+                        ),
                       ),
                       onPressed: () => Navigator.pop(context, true),
                       child: Text(
@@ -343,7 +344,7 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
   ) {
     showModalBottomSheet(
       context: parentContext,
-      backgroundColor: const Color(0xFF111827),
+      backgroundColor: const Color(0xFF202020),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -356,7 +357,7 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
               Text(
                 label,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
@@ -368,7 +369,7 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
                   borderRadius: BorderRadius.zero,
                   border: Border(
                     bottom: BorderSide(
-                      color: const Color(0xFF4b5563),
+                      color: const Color(0xFF858585),
                       width: 0.3,
                     ),
                   ),
@@ -377,7 +378,7 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
                   leading: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(38, 178, 223, 219),
+                      color: const Color(0xff343434),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(Icons.delete, color: Colors.red[400], size: 20),
@@ -408,11 +409,11 @@ class _TransactionInfoScreenState extends State<TransactionInfoScreen> {
 
                       ScaffoldMessenger.of(parentContext).showSnackBar(
                         SnackBar(
-                          backgroundColor: const Color(0xFF1f2937),
+                          backgroundColor: Color(0xFF292e31),
                           shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                              color: Color(0xFF4b5563),
-                              width: 0.5,
+                            side: BorderSide(
+                              color: const Color(0xFFc2c2c2),
+                              width: 0.3,
                             ),
                           ),
                           content: Row(

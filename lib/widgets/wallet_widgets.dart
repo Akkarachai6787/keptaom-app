@@ -22,14 +22,9 @@ class WalletBalanceCard extends StatelessWidget {
         margin: EdgeInsets.only(right: 12),
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Color(0xFF1f2937),
+          color: Color(0xFF292e31),
           borderRadius: BorderRadius.circular(20),
-          border: Border(
-            top: BorderSide(color: const Color(0xFF4b5563), width: 0.3),
-            bottom: BorderSide(color: const Color(0xFF4b5563), width: 0.3),
-            left: BorderSide(color: const Color(0xFF4b5563), width: 0.3),
-            right: BorderSide(color: const Color(0xFF4b5563), width: 0.3),
-          ),
+           border: Border.all(color: const Color(0xFF292e31), width: 0.3),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,17 +63,12 @@ class AddWalletCard extends StatelessWidget {
         margin: EdgeInsets.only(right: 12),
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Color(0xFF1f2937),
+          color: Color(0xFF25292C),
           borderRadius: BorderRadius.circular(20),
-          border: Border(
-            top: BorderSide(color: const Color(0xFF4b5563), width: 0.3),
-            bottom: BorderSide(color: const Color(0xFF4b5563), width: 0.3),
-            left: BorderSide(color: const Color(0xFF4b5563), width: 0.3),
-            right: BorderSide(color: const Color(0xFF4b5563), width: 0.3),
-          ),
+           border: Border.all(color: const Color(0xFF25292c), width: 0.3),
         ),
         child: Center(
-          child: Icon(Icons.add, color:Colors.teal[400], size: 48),
+          child: Icon(Icons.add, color:Colors.white70, size: 48),
         ),
       ),
     );

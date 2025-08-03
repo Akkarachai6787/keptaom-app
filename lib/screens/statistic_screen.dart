@@ -229,9 +229,9 @@ class _StatisticScreenState extends State<StatisticScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF111827),
+      backgroundColor: const Color(0xFF202020),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF111827),
+        backgroundColor: const Color(0xFF202020),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         centerTitle: true,
@@ -265,13 +265,13 @@ class _StatisticScreenState extends State<StatisticScreen>
                           color: Color(0xFF4b5563),
                           width: 0.3,
                         ),
-                        backgroundColor: const Color(0xFF1e293b),
+                        backgroundColor: const Color(0xFF25292c),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 14,
                         ),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: Row(
@@ -330,7 +330,7 @@ class _StatisticScreenState extends State<StatisticScreen>
               TabBar(
                 controller: _tabController,
                 labelColor: Colors.white,
-                unselectedLabelColor: Colors.grey,
+                unselectedLabelColor: Colors.white70,
                 indicatorColor: _currentTabIndex == 0
                     ? Colors.teal[600]
                     : Colors.red[600],
