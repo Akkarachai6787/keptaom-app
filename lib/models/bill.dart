@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class TransactionModel {
+class Bill {
   final String id;
   final String title;
   final double amount;
@@ -8,17 +8,19 @@ class TransactionModel {
   final String yearMonth;
   final bool isTransfer;
   final String? toWalletId;
-  final bool isIncome;
   final DocumentReference? type;
   final String typeId;
-  final DocumentReference? wallet;
-  final String walletId;
+  final bool isPaid;
+  final String? walletId;
   final DocumentReference? uid;
   final String uidId;
-  DateTime get dateTime => date.toDate();
-  final DocumentSnapshot firestoreDoc;
+  final bool repeatEnabled;
+  final String? repeatFrequency;
+  final int? repeatInterval;
+  final Timestamp? repeatEndDate;
+  final Timestamp? nextBillDate;
 
-  TransactionModel({
+  Bill({
     required this.id,
     required this.title,
     required this.amount,
@@ -26,20 +28,22 @@ class TransactionModel {
     required this.yearMonth,
     required this.isTransfer,
     this.toWalletId,
-    required this.isIncome,
     this.type,
     required this.typeId,
-    this.wallet,
-    required this.walletId,
+    required this.isPaid,
+    this.walletId,
     this.uid,
     required this.uidId,
-    required this.firestoreDoc,
+    required this.repeatEnabled,
+    this.repeatFrequency,
+    this.repeatInterval,
+    this.repeatEndDate,
+    this.nextBillDate,
   });
 
-  factory TransactionModel.fromFirestore(DocumentSnapshot doc) {
+  factory Bill.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-
-    return TransactionModel(
+    return Bill(
       id: doc.id,
       title: data['title'] ?? '',
       amount: (data['amount'] is num)
@@ -48,21 +52,18 @@ class TransactionModel {
       date: data['date'] ?? Timestamp.now(),
       yearMonth: data['yearMonth'] ?? '',
       isTransfer: data['isTransfer'] ?? false,
-      toWalletId: data['toWalletId'] ?? '',
-      isIncome: data['isIncome'] ?? true,
-      type: data['type'] is DocumentReference
-          ? data['type'] as DocumentReference
-          : null,
-      typeId: data['typeId'] ?? '',
-      wallet: data['wallet'] is DocumentReference
-          ? data['wallet'] as DocumentReference
-          : null,
+      toWalletId: data['toWalletId'],
+      type: data['type'],
+      typeId: data['typeId'],
+      isPaid: data['isPaid'] ?? false,
       walletId: data['walletId'] ?? '',
-      uid: data['uid'] is DocumentReference
-      ? data['uid'] as DocumentReference
-      : null,
-      uidId: data['uiId'] ?? '',
-      firestoreDoc: doc,
+      uid: data['user'],
+      uidId: data['userId'],
+      repeatEnabled: data['repeat']?['enabled'] ?? false,
+      repeatFrequency: data['repeat']?['frequency'],
+      repeatInterval: data['repeat']?['interval'],
+      repeatEndDate: data['repeat']?['endDate'],
+      nextBillDate: data['repeat']?['nextBill'],
     );
   }
 
@@ -74,13 +75,19 @@ class TransactionModel {
       'yearMonth': yearMonth,
       'isTransfer': isTransfer,
       'toWalletId': toWalletId,
-      'isIncome': isIncome,
       'type': type,
       'typeId': typeId,
-      'wallet': wallet,
-      'walletId': walletId,
-      'uid' : uid,
-      'uidId' : uidId,
+      'isPaid': isPaid,
+      'wallet': walletId,
+      'user': uid,
+      'userId': uidId,
+      'repeat': {
+        'enabled': repeatEnabled,
+        'frequency': repeatFrequency,
+        'interval': repeatInterval,
+        'endDate': repeatEndDate,
+        'nextBill': nextBillDate,
+      },
     };
   }
 }

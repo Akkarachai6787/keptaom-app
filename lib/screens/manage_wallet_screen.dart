@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:keptaom/services/wallet_services.dart';
+import 'package:keptaom/services/transaction_services.dart';
 import 'package:keptaom/models/wallet.dart';
+import 'package:keptaom/widgets/snack_bar.dart';
 
 class Managewallet extends StatefulWidget {
   final Wallet? wallet;
+  final String? userId;
 
-  const Managewallet({super.key, this.wallet});
+  const Managewallet({super.key, this.wallet, this.userId});
 
   @override
   State<Managewallet> createState() => _ManagewalletState();
@@ -16,6 +19,8 @@ class _ManagewalletState extends State<Managewallet> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _balanceController = TextEditingController();
   final walletService = WalletServices();
+  final transactionService = Transactionservices();
+  late double oldBalance = 0.0;
 
   @override
   void initState() {
@@ -23,6 +28,7 @@ class _ManagewalletState extends State<Managewallet> {
     if (widget.wallet != null) {
       _nameController.text = widget.wallet!.label;
       _balanceController.text = widget.wallet!.amount.toString();
+      oldBalance = widget.wallet!.amount;
     }
   }
 
@@ -33,61 +39,60 @@ class _ManagewalletState extends State<Managewallet> {
 
       try {
         if (widget.wallet == null) {
-          // Add
-          await walletService.addWallet(name, balance);
+          await walletService.addWallet(
+            name: name,
+            balance: balance,
+            userId: widget.userId!,
+          );
         } else {
-          // Edit
-          await walletService.updateWallet(widget.wallet!.id, name, balance);
+          final difference = balance - oldBalance;
+
+          await walletService.updateWallet(
+            id: widget.wallet!.id,
+            name: name,
+            balance: balance,
+          );
+
+          if (difference != 0) {
+            await transactionService.addTransaction(
+              title: difference > 0 ? 'Some income' : 'Some expense',
+              amount: difference,
+              date: DateTime.now(),
+              isTransfer: false,
+              isIncome: difference > 0 ? true : false,
+              walletId: widget.wallet!.id,
+              userId: widget.userId!,
+              typeId: difference > 0 ? 'otherIncome' : 'otherExpense',
+            );
+          }
         }
+
+        if (!mounted) return;
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-          backgroundColor: Color(0xFF292e31),
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: const Color(0xFFc2c2c2), width: 0.3),
+            backgroundColor: Color(0xFF292e31),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: const Color(0xFFc2c2c2), width: 0.3),
+            ),
+            content: SnackBarWidget(
+              isError: false,
+              message: widget.wallet == null
+                  ? 'Add "$name" successfully'
+                  : 'Updated "$name" successfully',
+            ),
           ),
-          content: Row(
-            children: [
-              Icon(Icons.check_circle_outline, color: Colors.teal),
-              SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                    widget.wallet == null
-                        ? 'Add "$name" successfully'
-                        : 'Updated "$name" successfully',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
         );
 
         Navigator.pop(context, true);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-          backgroundColor: Color(0xFF1f2937),
-            content: Row(
-              children: [
-                Icon(Icons.error, color: Colors.red),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Error: $e',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
-              ],
+            backgroundColor: Color(0xFF292e31),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: const Color(0xFFc2c2c2), width: 0.3),
             ),
+            content: SnackBarWidget(isError: true, message: 'Error: $e'),
           ),
         );
       }
@@ -97,9 +102,16 @@ class _ManagewalletState extends State<Managewallet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF202020),
       appBar: AppBar(
-        title: Text(widget.wallet == null ? 'Add new wallet' : 'Edit wallet'),
+        centerTitle: true,
         backgroundColor: const Color(0xFF202020),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        title: Text(
+          widget.wallet == null ? 'Add new wallet' : 'Edit wallet',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -190,22 +202,22 @@ class _ManagewalletState extends State<Managewallet> {
                 child: ElevatedButton(
                   onPressed: _saveWallet,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF202020),
+                    backgroundColor: const Color(0xFFf2f0ef),
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 60),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadiusGeometry.circular(12),
                       side: BorderSide(
-                        color: const Color(0xFFc2c2c2),
-                        width: 2
-                      )
+                        color: const Color(0xFFf2f0ef),
+                        width: 2,
+                      ),
                     ),
                   ),
                   child: Text(
                     widget.wallet == null ? 'Add wallet' : 'Save changes',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                      color: Color(0xFF111111),
                     ),
                   ),
                 ),

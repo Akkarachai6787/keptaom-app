@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:keptaom/models/category_transaction.dart';
-import 'package:keptaom/models/wallet.dart';
+// import 'package:keptaom/models/wallet.dart';
+import '../models/list_combined.dart';
 
 class DropdownTypesSelectorSheet extends StatelessWidget {
   final List<CategoryTransaction> docs;
   final String Function(CategoryTransaction) fieldGetter;
 
   const DropdownTypesSelectorSheet({
-    Key? key,
+    super.key,
     required this.docs,
     required this.fieldGetter,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +40,14 @@ class DropdownTypesSelectorSheet extends StatelessWidget {
 }
 
 class DropdownWalletsSelectorSheet extends StatelessWidget {
-  final List<Wallet> docs;
-  final String Function(Wallet) fieldGetter;
+  final List<ListCombined> docs;
+  final String Function(ListCombined) fieldGetter;
 
   const DropdownWalletsSelectorSheet({
-    Key? key,
+    super.key,
     required this.docs,
     required this.fieldGetter,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

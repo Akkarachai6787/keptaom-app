@@ -3,8 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:keptaom/models/transaction.dart';
 import 'package:keptaom/models/category_transaction.dart';
 import 'package:keptaom/utils/format_date.dart';
-import 'package:keptaom/screens/transaction_info_screen.dart';
-import 'package:keptaom/utils/color_utils.dart';
 
 class TransactionByMonth extends StatefulWidget {
   final List<TransactionModel> transaction;
@@ -35,160 +33,97 @@ class _TransactionByMonthState extends State<TransactionByMonth> {
     _transactions.sort((a, b) => b.date.compareTo(a.date));
   }
 
-  Future<void> _showBackDialog(BuildContext context) async {
-    await showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF111827),
-          title: const Text(
-            'Updated',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          content: const Text(
-            'Your total net has been updated.',
-            style: TextStyle(fontSize: 15, color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal[800],
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 60),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadiusGeometry.circular(12),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK', style: TextStyle(color: Colors.white)),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, dynamic resultSetter) async {
-        if (!didPop) {
-          if (shouldRefresh == true) {
-            await _showBackDialog(context);
-            if (!context.mounted) return;
-            Navigator.pop(context, true);
-          } else {
-            if (!context.mounted) return;
-            Navigator.pop(context, false);
-          }
-        }
-      },
-
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: const Color(0xFF202020),
+      appBar: AppBar(
+        centerTitle: true,
         backgroundColor: const Color(0xFF202020),
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF202020),
-          title: Text(
-            '${widget.category.title} - ${widget.month} ${widget.year}',
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () async {
-              if (shouldRefresh == true) {
-                await _showBackDialog(context);
-                if (!context.mounted) return;
-                Navigator.pop(context, true);
-              } else {
-                if (!context.mounted) return;
-                Navigator.pop(context, false);
-              }
-            },
-          ),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        title: Text(
+          '${widget.category.title} - ${widget.month} ${widget.year}',
+          style: TextStyle(color: Colors.white),
         ),
-        body: ListView.builder(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 16, top: 6, right: 16, bottom: 0),
+        child: ListView.builder(
           itemCount: _transactions.length,
           itemBuilder: (context, index) {
             final tx = _transactions[index];
-            return GestureDetector(
-              onTap: () async {
-                shouldRefresh = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => TransactionInfoScreen(
-                      transaction: tx,
-                      catColor: hexToColor(widget.category.color),
+
+            BorderRadius borderRadius;
+            if (_transactions.length == 1) {
+              borderRadius = BorderRadius.circular(20);
+            } else if (index == 0) {
+              borderRadius = const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              );
+            } else if (index == _transactions.length - 1) {
+              borderRadius = const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              );
+            } else {
+              borderRadius = BorderRadius.zero;
+            }
+
+            BoxDecoration decoration = BoxDecoration(
+              color: const Color(0xFF292e31),
+              borderRadius: borderRadius,
+              border: index != _transactions.length - 1
+                  ? const Border(
+                      bottom: BorderSide(color: Color(0xFF66737A), width: 0.3),
+                    )
+                  : null,
+            );
+            return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: decoration,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          tx.title,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          formatDate(tx.date),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                );
-                if (shouldRefresh == true) {
-                  setState(() {
-                    _transactions.removeAt(index);
-                  });
-                }
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF292e31),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: const Color(0xFF292e31),
-                    width: 0.3,
+                  Text(
+                    '${tx.isIncome ? '' : '-'}${NumberFormat("#,##0.00", "en_US").format(tx.amount.abs())} ฿',
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            tx.title,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            formatDate(tx.date),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      '${tx.isIncome ? '' : '-'}${NumberFormat("#,##0.00", "en_US").format(tx.amount.abs())} ฿',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        color: tx.isIncome ? Colors.teal[600] : Colors.red[600],
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
             );
           },

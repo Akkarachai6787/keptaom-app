@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:keptaom/main.dart';
+import 'package:keptaom/screens/navigation_bar.dart';
 import 'package:keptaom/services/auth_services.dart';
 import 'package:keptaom/screens/sign_up_screen.dart';
 
@@ -36,10 +36,13 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _error = result);
     }
 
+    if (!mounted) return;
+
     if (result == null) {
+      final uid = _authService.currentUser?.uid ?? '';
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => HomeScreen()),
+        MaterialPageRoute(builder: (_) => HomeScreen(userId: uid)),
         (route) => false,
       );
     }
@@ -168,7 +171,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 30),
 
                   _loading
-                      ? const CircularProgressIndicator()
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 4,
+                        )
                       : SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

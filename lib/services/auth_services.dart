@@ -1,11 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+class SignUpResult {
+  final String? uid;
+  final String? error;
+
+  SignUpResult({this.uid, this.error});
+
+  bool get isSuccess => uid != null;
+}
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<String?> signUp({
+  Future<SignUpResult> signUp({
     required String email,
     required String password,
     required String name,
@@ -16,18 +25,25 @@ class AuthService {
         password: password,
       );
 
-      await _firestore.collection('users').doc(userCred.user!.uid).set({
-        'uid': userCred.user!.uid,
+      final uid = userCred.user!.uid;
+
+      await _firestore.collection('users').doc(uid).set({
+        'uid': uid,
         'email': email,
         'name': name,
+        'enableBudget': true,
+        'types': {},
         'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      return null;
+      return SignUpResult(uid: uid);
     } on FirebaseAuthException catch (e) {
-      return _mapFirebaseErrorToMessage(e);
+      return SignUpResult(error: _mapFirebaseErrorToMessage(e));
     } catch (e) {
-      return 'An unknown error occurred. Please try again.';
+      return SignUpResult(
+        error: 'An unknown error occurred. Please try again.',
+      );
     }
   }
 
@@ -70,7 +86,7 @@ class AuthService {
 
   // Sign out
   Future<void> signOut() async {
-      await _auth.signOut();
+    await _auth.signOut();
   }
 
   // Current user

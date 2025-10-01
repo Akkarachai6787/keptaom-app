@@ -8,12 +8,14 @@ import 'package:keptaom/utils/format_date.dart';
 
 class TransactionItem extends StatelessWidget {
   final TransactionModel transaction;
+  final String userId;
   final CategoryTransaction? category;
   final Future<void> Function()? onUpdate;
 
   const TransactionItem({
     super.key,
     required this.transaction,
+    required this.userId,
     this.onUpdate,
     this.category,
   });
@@ -29,7 +31,11 @@ class TransactionItem extends StatelessWidget {
         final result = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => TransactionInfoScreen(transaction: transaction, catColor: catColor),
+            builder: (_) => TransactionInfoScreen(
+              transaction: transaction,
+              catColor: catColor,
+              userId: userId,
+            ),
           ),
         );
 
@@ -38,12 +44,11 @@ class TransactionItem extends StatelessWidget {
         }
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
         decoration: BoxDecoration(
-          color: const Color(0xFF292e31),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFF292e31), width: 0.3),
+          border: Border(
+            bottom: BorderSide(color: const Color(0xFF66737A), width: 0.3),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,7 +60,9 @@ class TransactionItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
-                transaction.isIncome
+                transaction.isTransfer
+                    ? Icons.swap_horiz_rounded
+                    : transaction.isIncome
                     ? Icons.arrow_upward_rounded
                     : Icons.arrow_downward_rounded,
                 color: Colors.white,

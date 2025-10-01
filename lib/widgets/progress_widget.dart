@@ -6,11 +6,11 @@ class ExpenseProgressWidget extends StatelessWidget {
   final bool isPositive; // true if expensePercent <= 100%
 
   const ExpenseProgressWidget({
-    Key? key,
+    super.key,
     required this.expensePercent,
     required this.leftRecommended,
     required this.isPositive,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

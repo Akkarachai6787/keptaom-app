@@ -32,6 +32,7 @@ class PieChartWidget extends StatelessWidget {
           color: colorList[index % colorList.length],
           value: value,
           title: '${percent.toStringAsFixed(1)}%',
+          showTitle: false,
           radius: MediaQuery.of(context).size.width / 7,
           titlePositionPercentageOffset: 1.4,
           titleStyle: const TextStyle(

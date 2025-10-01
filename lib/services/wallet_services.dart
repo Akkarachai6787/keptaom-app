@@ -1,26 +1,60 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/rendering.dart';
 import 'package:keptaom/models/wallet.dart';
 
 class WalletServices {
-  Future<List<Wallet>> fetchWallets() async {
+  Future<List<Wallet>> fetchWallets(String uid) async {
     final snapshot = await FirebaseFirestore.instance
         .collection('wallets')
+        .where('userId', isEqualTo: uid)
         .get();
     final data = snapshot.docs.map((doc) => Wallet.fromFirestore(doc)).toList();
+
+    data.sort((a, b) => b.date.compareTo(a.date));
     return data;
   }
 
-  Future<void> addWallet(String name, double balance) async {
+  Future<Wallet?> fetchWalletById(String wid) async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('wallets')
+          .doc(wid)
+          .get();
+
+      if (doc.exists) {
+        return Wallet.fromFirestore(doc);
+      }
+      return null;
+    } catch (e) {
+      debugPrint("Error fetching wallet by id: $e");
+      return null;
+    }
+  }
+
+  Future<void> addWallet({
+    required String name,
+    required double balance,
+    required String userId,
+  }) async {
     await FirebaseFirestore.instance.collection('wallets').add({
       'name': name,
       'balance': balance,
+      'user': FirebaseFirestore.instance.collection('users').doc(userId),
+      'userId': userId,
+      'createdAt': DateTime.now(),
+      'date': DateTime.now(),
     });
   }
 
-  Future<void> updateWallet(String id, String name, double balance) async {
+  Future<void> updateWallet({
+    required String id,
+    required String name,
+    required double balance,
+  }) async {
     await FirebaseFirestore.instance.collection('wallets').doc(id).update({
       'name': name,
       'balance': balance,
+      'date': DateTime.now(),
     });
   }
 
@@ -54,7 +88,7 @@ class WalletServices {
 
     newBalance = (newBalance * 100).round() / 100;
 
-    await walletRef.update({'balance': newBalance});
+    await walletRef.update({'balance': newBalance, 'date': DateTime.now()});
   }
 
   Future<void> reverseWalletBalanceChange({
@@ -80,6 +114,6 @@ class WalletServices {
 
     newBalance = (newBalance * 100).round() / 100;
 
-    await walletRef.update({'balance': newBalance});
+    await walletRef.update({'balance': newBalance, 'date': DateTime.now()});
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:keptaom/services/auth_services.dart';
+import '../services/budget_services.dart';
+import '../services/user_services.dart';
 import 'package:keptaom/screens/login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -15,6 +17,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
+  final _budgetServices = BudgetServices();
+  final _userServices = UserServices();
 
   bool _loading = false;
   String? _error;
@@ -33,20 +37,24 @@ class _SignupScreenState extends State<SignupScreen> {
       password: _passwordController.text.trim(),
     );
 
-    if (result != null) {
-      setState(() => _error = result);
-    }
+    if (!mounted) return;
 
-    if (result == null) {
+    if (result.isSuccess) {
+      _createDocument(result.uid!);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
-        ),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
+    } else {
+      setState(() => _error = result.error);
     }
 
     setState(() => _loading = false);
+  }
+
+  void _createDocument(String uid) async {
+    await _budgetServices.addBudget(label: 'Budget', uidId: uid);
+    await _userServices.addTypesToUser(uid);
   }
 
   @override
@@ -214,7 +222,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   const SizedBox(height: 30),
 
                   _loading
-                      ? const CircularProgressIndicator()
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 4,
+                        )
                       : SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

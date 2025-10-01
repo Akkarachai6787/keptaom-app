@@ -8,8 +8,12 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF202020),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF202020),
         automaticallyImplyLeading: false,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
       ),
       body: Center(
         child: Padding(

@@ -8,7 +8,7 @@ import 'package:keptaom/screens/transaction_by_month.dart';
 class CategoriesItem extends StatelessWidget {
   final CategoryTransaction category;
   final double totalAmount;
-  final double percent;
+  final double? percent;
   final List<TransactionModel> transactions;
   final String month;
   final int year;
@@ -18,7 +18,7 @@ class CategoriesItem extends StatelessWidget {
     super.key,
     required this.category,
     required this.totalAmount,
-    required this.percent,
+    this.percent,
     required this.transactions,
     required this.month,
     required this.year,
@@ -34,11 +34,16 @@ class CategoriesItem extends StatelessWidget {
         final shouldRefresh = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => TransactionByMonth(transaction: transactions, month: month, year: year, category: category),
+            builder: (_) => TransactionByMonth(
+              transaction: transactions,
+              month: month,
+              year: year,
+              category: category,
+            ),
           ),
         );
 
-      print('check_item $shouldRefresh');
+        debugPrint('check_item $shouldRefresh');
         if (shouldRefresh == true) {
           if (onRefresh != null) {
             onRefresh!();
@@ -80,29 +85,46 @@ class CategoriesItem extends StatelessWidget {
                 ),
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '${category.isIncome ? '' : '-'}${NumberFormat("#,##0.00", "en_US").format(totalAmount.abs())} ฿',
+            if (percent != null) ...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${category.isIncome ? '' : '-'}${NumberFormat("#,##0.00", "en_US").format(totalAmount.abs())} ฿',
 
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  '${percent.toStringAsFixed(1)}%',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white,
+                  SizedBox(height: 2),
+                  Text(
+                    '${percent!.toStringAsFixed(1)}%',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ] else ...[
+                Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${category.isIncome ? '' : '-'}${NumberFormat("#,##0.00", "en_US").format(totalAmount.abs())} ฿',
+
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
