@@ -1,16 +1,12 @@
 # keptaom
 
-A new Flutter project.
+**KeptAom** is a Flutter-based personal finance app that helps users track wallets, transactions, bills, and budgets. It integrates with Firebase Firestore for real-time data storage and management.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Manage multiple wallets (e.g., bank, cash) and view balances.
+- Add and delete transactions.
+- Categorize transactions by types (income, expense, bill, etc.).
+- Automatic calculation of totals and budget tracking.
+- Firebase Firestore integration for secure data storage.
+- Minimalist and intuitive UI.
