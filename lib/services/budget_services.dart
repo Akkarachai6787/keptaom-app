@@ -83,9 +83,9 @@ class BudgetServices {
     }
   }
 
-  Future<void> endOfMonthBudget(String budgetId, double actual) async {
-    final now = DateTime.now();
-    final key = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+  Future<void> endOfMonthBudget(String budgetId, double actual, int year, int month) async {
+    // final now = DateTime.now();
+    final key = '${year}-${month.toString().padLeft(2, '0')}';
 
     final docRef = _budgetRef.doc(budgetId);
     final snapshot = await docRef.get();

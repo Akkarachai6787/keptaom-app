@@ -41,6 +41,10 @@ class Budget {
     required this.monthsAdded,
   });
 
+  bool getFinalized(String monthKey) {
+    return monthsAdded[monthKey]?.finalized ?? false;
+  }
+
   factory Budget.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 

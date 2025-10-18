@@ -30,7 +30,7 @@ class _StatisticScreenState extends State<StatisticScreen>
   List<CategoryTransaction?> othersTransactionCategories = [];
   final categoryService = CategoryServices();
   final budgetServices = BudgetServices();
-  Budget? budget;
+  late Budget budget;
   final billServices = BillService();
 
   Map<String, double> categoryTotals = {};
@@ -90,9 +90,7 @@ class _StatisticScreenState extends State<StatisticScreen>
   Future<void> _loadAllData() async {
     await loadTransactions();
     await loadBudget();
-    if (budget != null) {
-      await checkBudgetCycle(leftRec);
-    }
+    await checkBudgetCycle(leftRec);
   }
 
   Future<void> loadTransactions() async {
@@ -110,17 +108,13 @@ class _StatisticScreenState extends State<StatisticScreen>
     final otherTransactions = data['otherLists']!;
 
     final List<Future<CategoryTransaction?>> futures = normalList
-        .map(
-          (tx) => categoryService.fetchCategoryById(tx.typeId),
-        )
+        .map((tx) => categoryService.fetchCategoryById(tx.typeId))
         .toList();
 
     final categories = await Future.wait(futures);
 
     final List<Future<CategoryTransaction?>> otherFutures = otherTransactions
-        .map(
-          (tx) => categoryService.fetchCategoryById(tx.typeId),
-        )
+        .map((tx) => categoryService.fetchCategoryById(tx.typeId))
         .toList();
 
     final otherCategories = await Future.wait(otherFutures);
@@ -168,7 +162,7 @@ class _StatisticScreenState extends State<StatisticScreen>
           : 0;
     });
 
-    recExpense = (sumIncome * 0.35);
+    recExpense = (sumIncome * 0.50);
     expensePercent = recExpense > 0 ? (sumExpense / recExpense) * 100 : 0;
     leftRecommend = recExpense - sumExpense;
 
@@ -231,17 +225,20 @@ class _StatisticScreenState extends State<StatisticScreen>
     final now = DateTime.now();
     final actual = leftRec < 0 ? 0.0 : leftRec;
 
-    await budgetServices.startOfMonthBudget(budget!.id);
+    await budgetServices.startOfMonthBudget(budget.id);
 
     final isLastDay = now.add(const Duration(days: 1)).month != now.month;
+    final isThisMonth = now.month != _selectedMonth;
     final isAfter9PM = now.hour >= 21;
+    final isOkToAdd = (isAfter9PM && isLastDay) || isThisMonth;
+    final key = '$_selectedYear-${_selectedMonth.toString().padLeft(2, '0')}';
+    final isFinalized = budget.getFinalized(key);
 
-    if (isLastDay && isAfter9PM) {
-      final key = "${now.year}-${now.month.toString().padLeft(2, '0')}";
-      final monthData = budget!.monthsAdded[key];
+    if (isOkToAdd && (isFinalized == false)) {
+      final monthData = budget.monthsAdded[key];
 
       if (monthData == null || monthData.finalized != true) {
-        await budgetServices.endOfMonthBudget(budget!.id, actual);
+        await budgetServices.endOfMonthBudget(budget.id, actual, _selectedYear!, _selectedMonth!);
         if (actual > 0) {
           await billServices.addBill(
             title: 'Budget - $key',
@@ -274,6 +271,7 @@ class _StatisticScreenState extends State<StatisticScreen>
       });
 
       await loadTransactions();
+      await checkBudgetCycle(leftRec);
     }
   }
 

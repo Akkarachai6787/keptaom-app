@@ -74,7 +74,7 @@ class BalanceCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Recommend budget',
+              'Recommend extra budget',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
